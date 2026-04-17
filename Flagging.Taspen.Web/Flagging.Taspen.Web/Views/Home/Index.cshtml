@@ -1,0 +1,108 @@
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<!-- Main Content Row -->
+<div class="row">
+    <div class="col-md-5">
+        <div class="card mb-4">
+            <div class="card-header">
+                <strong>
+                    Checking Data
+                </strong>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="searchInput" class="form-label">Masukan NIP / Notas</label>
+                    <input type="text" class="form-control" id="searchInput" placeholder="Masukan NIP / Notas">
+                </div>
+
+                <button type="button" class="btn btn-primary" id="btnCari" onclick="searchData()" data-coreui-timeout="2000" data-coreui-toggle="loading-button">
+                    <span id="btnText">Cari</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <!-- Results Card -->
+        <div class="card" id="resultCard" style="display: none;">
+            <div class="card-header">
+                <strong>Hasil Pencarian</strong>
+            </div>
+            <div class="card-body">
+                <div id="resultContent"></div>
+            </div>
+        </div>     
+    </div>
+</div>
+
+<!-- Confirmation Modal -->
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true" data-coreui-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmModalLabel">Konfirmasi</h5>
+                <button type="button" class="btn-close" data-coreui-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Apakah yakin akan mencari data?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-coreui-dismiss="modal">Tidak</button>
+                <button type="button" class="btn btn-primary" id="btnConfirmYes">Ya</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const confirmModal = new coreui.Modal(document.getElementById('confirmModal'));
+        const searchInput = document.getElementById('searchInput');
+
+        // Click "Cari" -> show modal
+        function searchData() {
+            const input = searchInput.value.trim();
+            if (!input) {
+                ShowAlert('warning', 'Input Kosong', 'Masukkan NIP atau Notas terlebih dahulu');
+                return;
+            }
+            confirmModal.show();
+        }
+
+        // Click "Ya" on modal -> execute search
+        document.getElementById('btnConfirmYes').addEventListener('click', function() {
+            confirmModal.hide();
+            performSearch();
+        });
+
+        async function performSearch() {
+            const input = searchInput.value.trim();
+            LoadingButton(true, 'btnCari', 'Cari');
+
+            const resultCard = document.getElementById('resultCard');
+            resultCard.style.display = 'none';
+
+            try {
+                const response = await fetch(`@Url.Action("SearchData", "Home")?query=${encodeURIComponent(input)}`);
+                const data = await response.json();
+
+                if (data.found) {
+                    document.getElementById('resultContent').innerHTML = `
+                        <p><strong>NIP:</strong> ${data.nip || '-'}</p>
+                        <p><strong>Notas:</strong> ${data.notas || '-'}</p>
+                        <p><strong>Nama:</strong> ${data.nama || '-'}</p>
+                        <p><strong>Status:</strong> ${data.status || '-'}</p>
+                    `;
+                    resultCard.style.display = 'block';
+                } else {
+                    ShowAlert('warning', 'Data Tidak Ditemukan', 'NIP atau Notas yang Anda cari tidak ditemukan');
+                }
+            } catch (error) {
+                ShowAlert('danger', 'Error', 'Terjadi kesalahan saat mencari data');
+            } finally {
+                LoadingButton(false, 'btnCari', 'Cari')
+            }
+        }
+    </script>
+}

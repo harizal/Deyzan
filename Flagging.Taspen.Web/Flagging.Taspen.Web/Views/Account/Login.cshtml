@@ -1,0 +1,113 @@
+﻿@using Flagging.Taspen.Web.ViewModels
+<!-- Views/Account/Login.cshtml -->
+@model LoginViewModel
+@{
+    Layout = null; // No sidebar on login page
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    <link href="~/lib/coreui/dist/css/coreui.min.css" rel="stylesheet" />
+    <link href="~/css/site.css" rel="stylesheet" />
+</head>
+<body class="bg-body-tertiary min-vh-100 d-flex flex-row align-items-center bg-login">
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-4">
+                <div class="card-group d-block d-md-flex row">
+
+                    <div class="card col-md-7 p-4 mb-0">
+                        <div class="card-body">
+                            <form id="loginForm" asp-action="Login" asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post">
+                                @Html.AntiForgeryToken()
+                                <div class="text-center mb-10">
+                                    <a href="#" class="mb-12">
+                                        <img alt="Logo" src="../images/logo.png" class="logo">
+                                    </a>
+                                    <br><br>
+                                    <h4 class="text-dark mb-3">Taspen Informasi Flagging</h4>
+                                </div>
+
+                                <div id="dynamicGlobalAlert"></div>
+
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text">
+                                        <svg class="icon">
+                                            <use xlink:href="../lib/coreui-icons/svg/free/cil-user.svg"></use>
+                                        </svg>
+                                    </span>
+                                    <input asp-for="Email" class="form-control" placeholder="Email" />
+                                </div>
+                                <span asp-validation-for="Email" class="text-danger"></span>
+
+                                <div class="input-group mb-4">
+                                    <span class="input-group-text">
+                                        <svg class="icon">
+                                            <use xlink:href="../lib/coreui-icons/svg/free/cil-lock-locked.svg"></use>
+                                        </svg>
+                                    </span>
+                                    <input asp-for="Password" class="form-control" placeholder="Password" type="password" />
+                                </div>
+                                <span asp-validation-for="Password" class="text-danger"></span>
+
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="form-check">
+                                            <input asp-for="RememberMe" class="form-check-input" type="checkbox" />
+                                            <label asp-for="RememberMe" class="form-check-label">Remember me</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 text-end">
+                                        <button id="btnLogin" class="btn btn-primary px-4" type="submit">Login</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/coreui/dist/js/coreui.bundle.min.js"></script>
+    <script src="~/js/site.js"></script>
+    <script>
+            $("#loginForm").on("submit", function (e) {
+            e.preventDefault(); // stop normal POST
+
+            const form = $(this);
+            const actionUrl = form.attr("action");
+
+            LoadingButton(true, 'btnLogin', 'Login');
+
+            $.ajax({
+                url: actionUrl,
+                type: "POST",
+                data: form.serialize(),
+                success: function (response) {
+                    if (response.success) {
+                        ShowAlert("success", "Success!", "Login successful. Redirecting...");
+                        setTimeout(function () {
+                            window.location.href = response.redirectUrl;
+                        }, 1500);
+                    } else {
+                        ShowAlert("danger", "Failed!", response.message);
+                    }
+                    LoadingButton(false, 'btnLogin', 'Login');
+                },
+                error: function () {
+                    ShowAlert("danger", "Error!", "Something went wrong. Please try again.");
+                    LoadingButton(false, 'btnLogin', 'Login');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

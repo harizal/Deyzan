@@ -1,0 +1,50 @@
+﻿<header class="header header-sticky p-0">
+    <div class="container-fluid px-4 border-bottom">
+        <button class="header-toggler" type="button" onclick="coreui.Sidebar.getInstance(document.querySelector('#sidebar')).toggle()" style="margin-inline-start: -14px">
+            <svg class="icon icon-lg">
+                <use xlink:href="../lib/coreui-icons/svg/free/cil-menu.svg"></use>
+            </svg>
+        </button>
+        <ul class="header-nav d-none d-md-flex">
+            @* <li class="nav-item"><a class="nav-link" href="#" data-coreui-i18n="settings">Logout</a></li> *@
+            <li class="nav-item dropdown">
+                <a class="nav-link" data-coreui-toggle="dropdown" href="#">
+                    @User.Identity?.Name
+                </a>
+                <div class="dropdown-menu dropdown-menu-end">
+                    <form asp-controller="Account" asp-action="Logout" method="post">
+                        <button class="dropdown-item" type="submit">Logout</button>
+                    </form>
+                </div>
+            </li>
+           @*  <li class="nav-item dropdown">
+                <div class="dropdown-menu dropdown-menu-end pt-0" style="">
+                    <div class="dropdown-header bg-body-tertiary text-body-secondary fw-semibold rounded-top mb-2" data-coreui-i18n="account">Account</div>
+                    <a class="dropdown-item" href="#">
+                        <svg class="icon me-2">
+                            <use xlink:href="../lib/coreui-icons/svg/free/cil-account-logout.svg"></use>
+                        </svg><span data-coreui-i18n="logout">Logout</span>
+                    </a>
+                </div>
+            </li> *@
+        </ul>
+    </div>
+    <!-- Breadcrumb -->
+    <div class="container-fluid p-2">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb my-0">
+                <li class="breadcrumb-item py-1">
+                    <h5 style="margin-bottom: 2px; padding-left: 13px; ">
+                        Taspen Informasi Flagging
+                    </h5>
+                </li>
+                <li class="nav-item py-1">
+                    <div class="vr h-100 mx-2 text-body text-opacity-75"></div>
+                </li>
+                <li class="breadcrumb-item py-1">
+                    <span data-coreui-i18n="components">Checking Data</span>
+                </li>
+            </ol>
+        </nav>
+    </div>
+</header>

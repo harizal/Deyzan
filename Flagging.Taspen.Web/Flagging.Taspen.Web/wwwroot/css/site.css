@@ -1,0 +1,17 @@
+.bg-login {
+    background-image: url(../images/bg_login.jpg);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.logo {
+    height: 50px;
+}
+
+.wrapper {
+    width: 100%;
+    padding-inline: var(--cui-sidebar-occupy-start, 0) var(--cui-sidebar-occupy-end, 0);
+    will-change: auto;
+    transition: padding 0.15s;
+}

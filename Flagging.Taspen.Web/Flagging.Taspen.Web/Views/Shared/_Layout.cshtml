@@ -1,0 +1,43 @@
+@using Flagging.Taspen.Web.Utils
+<!-- Views/Shared/_Layout.cshtml -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - @Constants.ApplicationName</title>
+
+    <!-- CoreUI CSS -->
+    <link href="~/lib/coreui/dist/css/coreui.min.css" rel="stylesheet" />
+    <!-- CoreUI Icons (optional) -->
+    <link href="~/lib/coreui-icons/css/all.min.css" rel="stylesheet" />
+    <link href="~/css/site.css" rel="stylesheet" />
+</head>
+<body class="c-app">
+
+    @await Html.PartialAsync("_Sidebar")
+
+    <div class="wrapper d-flex flex-column min-vh-100">
+        @await Html.PartialAsync("_TopNav")
+
+        <div class="body flex-grow-1 px-3">
+            <div class="container-lg" style="padding-left: 0px;margin-left: 5px;padding-right: 0px;margin-right: 5px;max-width: 95%;margin-top: 20px;margin-bottom: 20px;">
+                <div id="dynamicGlobalAlert">
+                </div>
+
+                @RenderBody()
+            </div>
+        </div>
+
+        <footer class="footer">
+            <span>&copy; @DateTime.Now.Year @Constants.ApplicationName</span>
+        </footer>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/coreui/dist/js/coreui.bundle.min.js"></script>
+    <script src="~/js/site.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
