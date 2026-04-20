@@ -7,6 +7,7 @@ namespace Flagging.Taspen.Web.ViewModels
         public string TanggalLahir { get; set; }
         public string TanggalBUP { get; set; }
         public string Instansi { get; set; }
-        public string Status { get; set; }
+        public string Status { get; set; } = "Belum Floging Pensiun";
+        public bool IsBooking { get; set; }
     }
 }

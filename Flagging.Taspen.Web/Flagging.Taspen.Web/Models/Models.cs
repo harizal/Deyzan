@@ -20,5 +20,7 @@
         public DateTime TMTKredit { get; set; }
         public DateTime TATKredit { get; set; }
 
+        public bool IsBooking { get; set; }
+        public DateTime? IsBookingDate { get; set; }
     }
 }

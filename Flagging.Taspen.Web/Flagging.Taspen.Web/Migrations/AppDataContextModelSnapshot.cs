@@ -159,7 +159,11 @@ namespace Flagging.Taspen.Web.Migrations
 
                     b.Property<DateTime>("TMTKredit")
                         .HasColumnType("TEXT");
+                    b.Property<DateTime?>("IsBookingDate")
+                        .HasColumnType("TEXT");
 
+                    b.Property<bool>("IsBooking")
+                        .HasColumnType("INTEGER");
                     b.Property<DateTime>("TanggalLahir")
                         .HasColumnType("TEXT");
 

@@ -14,7 +14,7 @@
             <div class="card-body">
                 <div class="mb-3">
                     <label for="searchInput" class="form-label">Masukan NIP / Notas</label>
-                    <input type="text" class="form-control" id="searchInput" placeholder="Masukan NIP / Notas">
+                    <input type="text" class="form-control" id="searchInput" placeholder="Masukan NIP / Notas" onkeydown="if(event.key === 'Enter'){ event.preventDefault(); searchData(); }">
                 </div>
 
                 <button type="button" class="btn btn-primary" id="btnCari" onclick="searchData()" data-coreui-timeout="2000" data-coreui-toggle="loading-button">
@@ -62,6 +62,7 @@
                         </div>
                    </div>
                 </div>
+                <input type="hidden" id="selectedPesertaId" />
             </div>
             <div class="card-footer text-body-secondary">
                <button type="button" class="btn btn-primary" id="btnBooking" onclick="booking()">
@@ -75,7 +76,7 @@
     </div>
 </div>
 
-<!-- Confirmation Modal -->
+<!-- Search Confirmation Modal -->
 <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true" data-coreui-backdrop="static">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -94,10 +95,49 @@
     </div>
 </div>
 
+<!-- Booking Confirmation Modal -->
+<div class="modal fade" id="bookingModal" tabindex="-1" aria-labelledby="bookingModalLabel" aria-hidden="true" data-coreui-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="bookingModalLabel">Booking</h5>
+                <button type="button" class="btn-close" data-coreui-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Anda akan melakukan Booking ? Jangka waktu booking selama 1x24 jam.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-coreui-dismiss="modal">No</button>
+                <button type="button" class="btn btn-primary" id="btnBookingYes">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     <script>
         const confirmModal = new coreui.Modal(document.getElementById('confirmModal'));
-        const searchInput = document.getElementById('searchInput');
+        const bookingModal = new coreui.Modal(document.getElementById('bookingModal'));
+        let searchInput = null;
+        const selectedPesertaId = document.getElementById('selectedPesertaId');
+
+        function initSearchInput() {
+            searchInput = document.getElementById('searchInput');
+            if (!searchInput) return;
+
+            searchInput.addEventListener('keydown', function(event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    searchData();
+                }
+            });
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initSearchInput);
+        } else {
+            initSearchInput();
+        }
 
         // Click "Cari" -> show modal
         function searchData() {
@@ -109,10 +149,15 @@
             confirmModal.show();
         }
 
-        // Click "Ya" on modal -> execute search
+        // Click "Ya" on search modal -> execute search
         document.getElementById('btnConfirmYes').addEventListener('click', function() {
             confirmModal.hide();
             performSearch();
+        });
+
+        document.getElementById('btnBookingYes').addEventListener('click', function() {
+            bookingModal.hide();
+            performBooking();
         });
 
         async function performSearch() {
@@ -132,6 +177,8 @@
                     $("#tanggalBUP").val(data.data.tanggalBUP);
                     $("#instansi").val(data.data.instansi);
                     $("#status").text(data.data.status);
+                    selectedPesertaId.value = data.data.id;
+                    updateBookingButton(data.data.isBooking);
 
                     resultCard.style.display = 'block';
                 } else {
@@ -140,45 +187,80 @@
             } catch (error) {
                 ShowAlert('danger', 'Error', 'Terjadi kesalahan saat mencari data');
             } finally {
-                LoadingButton(false, 'btnCari', 'Cari')
+                LoadingButton(false, 'btnCari', 'Cari');
             }
         }
 
-        async function booking(){
+        function updateBookingButton(isBooking) {
+            const bookingButton = document.getElementById('btnBooking');
+            if (!bookingButton) return;
+
+            bookingButton.disabled = isBooking;
+            if (isBooking) {
+                bookingButton.classList.remove('btn-primary');
+                bookingButton.classList.add('btn-secondary');
+                bookingButton.innerText = 'Sudah Booking';
+            } else {
+                bookingButton.classList.remove('btn-secondary');
+                bookingButton.classList.add('btn-primary');
+                bookingButton.innerText = 'Booking';
+            }
+        }
+
+        function booking() {
+            const bookingButton = document.getElementById('btnBooking');
+            if (bookingButton?.disabled) {
+                return;
+            }
+
+            if (!selectedPesertaId.value) {
+                ShowAlert('warning', 'Data belum dipilih', 'Cari peserta terlebih dahulu sebelum melakukan Booking');
+                return;
+            }
+            bookingModal.show();
+        }
+
+        async function performBooking() {
+            LoadingButton(true, 'btnBooking', 'Booking');
+            try {
+                const response = await fetch(`@Url.Action("Booking", "Home")?id=${encodeURIComponent(selectedPesertaId.value)}`, {
+                    method: 'POST'
+                });
+                const data = await response.json();
+
+                if (data.isSuccess) {
+                    ShowAlert('success', 'Booking Berhasil', data.message || 'Booking berhasil disimpan');
+                    await performSearch();
+                } else {
+                    ShowAlert('warning', 'Booking Gagal', data.message || 'Gagal menyimpan booking');
+                }
+            } catch (error) {
+                ShowAlert('danger', 'Error', 'Terjadi kesalahan saat memproses booking');
+            } finally {
+                LoadingButton(false, 'btnBooking', 'Booking');
+            }
+        }
+
+        async function flagging() {
             isLoading(true);
-            try{
-                setTimeout(function(){
-                  isLoading(false);
+            try {
+                setTimeout(function() {
+                    isLoading(false);
                 }, 3000);
             }
-            catch(error) {
+            catch (error) {
                 ShowAlert('danger', 'Error', 'Terjadi kesalahan saat mencari data');
             } finally {
-                
             }
         }
 
-        async function flagging(){
-            isLoading(true);
-            try{
-                setTimeout(function(){
-                  isLoading(false);
-                }, 3000);
-            }
-            catch(error) {
-                ShowAlert('danger', 'Error', 'Terjadi kesalahan saat mencari data');
-            } finally {
-
-            }
-        }
-
-        function isLoading(isLoading){
-            LoadingButton(false, 'btnBooking', 'Booking');
-            LoadingButton(false, 'btnTextFlaging', 'Flaging Pensiun');
-
-            if(isLoading){
+        function isLoading(isLoading) {
+            if (isLoading) {
                 LoadingButton(true, 'btnBooking', 'Booking');
                 LoadingButton(true, 'btnTextFlaging', 'Flaging Pensiun');
+            } else {
+                LoadingButton(false, 'btnBooking', 'Booking');
+                LoadingButton(false, 'btnTextFlaging', 'Flaging Pensiun');
             }
         }
     </script>
