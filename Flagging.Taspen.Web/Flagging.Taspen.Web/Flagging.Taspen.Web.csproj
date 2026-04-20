@@ -4,6 +4,7 @@
 		<TargetFramework>net8.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
+		<DisableStaticWebAssetsBuild Condition="'$(Configuration)' == 'Debug'">true</DisableStaticWebAssetsBuild>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -16,6 +17,21 @@
 		</PackageReference>
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="Serilog.AspNetCore" Version="8.0.2" />
+	</ItemGroup>
+	<ItemGroup>
+		<Compile Remove="wwwroot\lib\**" />
+		<Content Remove="wwwroot\lib\**" />
+		<EmbeddedResource Remove="wwwroot\lib\**" />
+		<None Remove="wwwroot\lib\**" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Content Include="wwwroot\lib\coreui-icons\css\all.min.css" />
+	  <Content Include="wwwroot\lib\coreui\dist\css\coreui.min.css" />
+	</ItemGroup>
+	<ItemGroup>
+	  <None Include="wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js" />
+	  <None Include="wwwroot\lib\coreui\dist\js\coreui.bundle.min.js" />
+	  <None Include="wwwroot\lib\jquery\dist\jquery.min.js" />
 	</ItemGroup>
 
 </Project>

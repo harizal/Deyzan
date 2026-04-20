@@ -25,14 +25,53 @@
     </div>
     <div class="col-md-8">
         <!-- Results Card -->
-        <div class="card" id="resultCard" style="display: none;">
+        <div class="card" id="resultCard" style="display: none">
             <div class="card-header">
                 <strong>Hasil Pencarian</strong>
             </div>
             <div class="card-body">
-                <div id="resultContent"></div>
+                <div class="row">
+                    <div class="col-md-5">
+                        <label class="form-label">Nama Peserta / Penerima</label>
+                        <input id="nama" type="text" class="form-control" disabled />
+                    </div>
+                    <div class="col-md-5">
+                        <label class="form-label">Tanggal Lahir Peserta / Penerima</label>
+                        <input id="tanggalLahirPenerima" type="text" class="form-control" disabled />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-5">
+                        <label class="form-label">Tanggal BUP / Wafat</label>
+                        <input id="tanggalBUP" type="text" class="form-control" disabled />
+                    </div>
+                    <div class="col-md-5">
+                        <label class="form-label">Instansi / Kantor Bayar Pensiun</label>
+                        <input id="instansi" type="text" class="form-control" disabled />
+                    </div>
+                </div>
+                <div class="row">
+                   <div class="col-md-10 p-2 mt-4">
+                        <div class="alert alert-primary d-flex align-items-center" role="alert">
+                            <svg class="icon-info">
+                                <use xlink:href="../lib/coreui-icons/svg/free/cil-info.svg"></use>
+                            </svg>
+                            <div>
+                              <span id="status"></span>
+                            </div>
+                        </div>
+                   </div>
+                </div>
             </div>
-        </div>     
+            <div class="card-footer text-body-secondary">
+               <button type="button" class="btn btn-primary" id="btnBooking" onclick="booking()">
+                    <span id="btnTextBooking">Booking</span>
+                </button>
+                <button type="button" class="btn btn-success" id="btnFlaging" onclick="flagging()">
+                    <span id="btnTextFlaging">Flaging Pensiun</span>
+                </button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -87,13 +126,13 @@
                 const response = await fetch(`@Url.Action("SearchData", "Home")?query=${encodeURIComponent(input)}`);
                 const data = await response.json();
 
-                if (data.found) {
-                    document.getElementById('resultContent').innerHTML = `
-                        <p><strong>NIP:</strong> ${data.nip || '-'}</p>
-                        <p><strong>Notas:</strong> ${data.notas || '-'}</p>
-                        <p><strong>Nama:</strong> ${data.nama || '-'}</p>
-                        <p><strong>Status:</strong> ${data.status || '-'}</p>
-                    `;
+                if (data.isSuccess) {
+                    $("#nama").val(data.data.nama);
+                    $("#tanggalLahirPenerima").val(data.data.tanggalLahir);
+                    $("#tanggalBUP").val(data.data.tanggalBUP);
+                    $("#instansi").val(data.data.instansi);
+                    $("#status").text(data.data.status);
+
                     resultCard.style.display = 'block';
                 } else {
                     ShowAlert('warning', 'Data Tidak Ditemukan', 'NIP atau Notas yang Anda cari tidak ditemukan');
@@ -102,6 +141,44 @@
                 ShowAlert('danger', 'Error', 'Terjadi kesalahan saat mencari data');
             } finally {
                 LoadingButton(false, 'btnCari', 'Cari')
+            }
+        }
+
+        async function booking(){
+            isLoading(true);
+            try{
+                setTimeout(function(){
+                  isLoading(false);
+                }, 3000);
+            }
+            catch(error) {
+                ShowAlert('danger', 'Error', 'Terjadi kesalahan saat mencari data');
+            } finally {
+                
+            }
+        }
+
+        async function flagging(){
+            isLoading(true);
+            try{
+                setTimeout(function(){
+                  isLoading(false);
+                }, 3000);
+            }
+            catch(error) {
+                ShowAlert('danger', 'Error', 'Terjadi kesalahan saat mencari data');
+            } finally {
+
+            }
+        }
+
+        function isLoading(isLoading){
+            LoadingButton(false, 'btnBooking', 'Booking');
+            LoadingButton(false, 'btnTextFlaging', 'Flaging Pensiun');
+
+            if(isLoading){
+                LoadingButton(true, 'btnBooking', 'Booking');
+                LoadingButton(true, 'btnTextFlaging', 'Flaging Pensiun');
             }
         }
     </script>

@@ -15,3 +15,9 @@
     will-change: auto;
     transition: padding 0.15s;
 }
+
+.icon-info {
+    width: 20px;
+    height: 20px;
+    margin-right: 6px;
+}

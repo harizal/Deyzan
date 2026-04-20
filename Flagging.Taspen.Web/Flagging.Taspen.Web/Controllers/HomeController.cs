@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Flagging.Taspen.Web.DBContext;
+using Flagging.Taspen.Web.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Flagging.Taspen.Web.Controllers
@@ -6,6 +8,12 @@ namespace Flagging.Taspen.Web.Controllers
     [Authorize]
     public class HomeController : Controller
     {
+        private readonly AppDataContext _context;
+        public HomeController(AppDataContext appDataContext)
+        {
+            _context = appDataContext;
+        }
+
         public IActionResult Index()
         {
             return View();
@@ -14,19 +22,24 @@ namespace Flagging.Taspen.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> SearchData(string query)
         {
-            await Task.Delay(2000); // Simulate async work, e.g., database call
-            throw new Exception("This is a dummy endpoint. Replace with actual implementation.");
-            // Dummy data - replace with DB call later
-            var dummyData = new
+            var peserta = _context.Peserta.FirstOrDefault(m => m.NIP.Contains(query) || m.Notas.Contains(query));
+            if (peserta == null)
+                throw new Exception("This is a dummy endpoint. Replace with actual implementation.");
+            var pesertaViewModel = new PesertaViewModel
             {
-                found = !string.IsNullOrEmpty(query),
-                nip = query,
-                notas = query,
-                nama = "Nama Dummy",
-                status = "Aktif"
+                ID = peserta.Id,
+                Nama = Helpers.Utils.MaskName(peserta.Nama),
+                TanggalLahir = peserta.TanggalLahir.ToString("yyyy-MM"),
+                TanggalBUP = "",
+                Instansi = peserta.Instansi
             };
 
-            return Json(dummyData);
+            return Json(new BaseViewModel<PesertaViewModel>
+            {
+                IsSuccess = true,
+                Message = "Data found",
+                Data = pesertaViewModel
+            });
         }
     }
 }
