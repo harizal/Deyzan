@@ -51,13 +51,13 @@
                     </div>
                 </div>
                 <div class="row">
-                   <div class="col-md-10 p-2 mt-4">
+                    <div class="col-md-10 p-2 mt-4">
                         <div class="alert alert-primary d-flex align-items-center" role="alert">
                             <svg class="icon-info">
                                 <use xlink:href="../lib/coreui-icons/svg/free/cil-info.svg"></use>
                             </svg>
                             <div>
-                              <span id="status"></span>
+                                <span id="status"></span>
                             </div>
                         </div>
                         <div class="alert alert-warning d-flex align-items-center" role="alert">
@@ -68,12 +68,12 @@
                                 <span id="statusFlaging"></span>
                             </div>
                         </div>
-                   </div>
+                    </div>
                 </div>
                 <input type="hidden" id="selectedPesertaId" />
             </div>
             <div class="card-footer text-body-secondary">
-               <button type="button" class="btn btn-primary" id="btnBooking" onclick="booking()">
+                <button type="button" class="btn btn-primary" id="btnBooking" onclick="booking()">
                     <span id="btnTextBooking">Booking</span>
                 </button>
                 <button type="button" class="btn btn-success ms-2" id="btnFlaging" onclick="flagging()">
@@ -208,7 +208,7 @@
                     $("#instansi").val(data.data.instansi);
                     $("#status").text(data.data.status);
                     $("#statusFlaging").text(data.data.status);
-                    selectedPesertaId.value = data.data.statusFlaging;
+                    selectedPesertaId.value = data.data.id;
                     updateBookingButton(data.data.isBooking);
                     updateFlagingButton(data.data.isFlaging);
 
@@ -247,11 +247,11 @@
             if (isFlaging) {
                 flagingButton.classList.remove('btn-primary');
                 flagingButton.classList.add('btn-secondary');
-                flagingButton.innerText = 'Sudah Booking';
+                flagingButton.innerText = 'Sudah Flaging';
             } else {
                 flagingButton.classList.remove('btn-secondary');
                 flagingButton.classList.add('btn-primary');
-                flagingButton.innerText = 'Booking';
+                flagingButton.innerText = 'Flaging Pensiun';
             }
         }
 
@@ -294,31 +294,39 @@
         }
 
         async function performFlaging(){
-            LoadingButton(true, 'btnFlaging', 'Flaging Pensiun');
-            try{
-                 const response = await fetch(`@Url.Action("FlagingFlag", "Home")?id=${encodeURIComponent(selectedPesertaId.value)}`, {
-                    method: 'POST'
-                });
-                const data = await response.json();
-
-                if (data.isSuccess) {
-                     ShowAlert("success", "Success!", "Redirecting to Flaging Page...");
-                        setTimeout(function () {
-                            window.location = '@Url.Action("Flaging", "Home")?idPeserta=' + encodeURIComponent(selectedPesertaId.value);
-                        }, 1500);
-                } else {
-                    ShowAlert('warning', 'Flaging Gagal', data.message || 'Gagal menyimpan Flaging');
-                    LoadingButton(false, 'btnFlaging', 'Flaging Pensiun');
-                }
-            }catch{
-                ShowAlert('danger', 'Error', 'Terjadi kesalahan saat memproses booking');
-                LoadingButton(false, 'btnFlaging', 'Flaging Pensiun');
-            }
+            //LoadingButton(true, 'btnFlaging', 'Flaging Pensiun');
+            //try{
+            //     const response = await fetch(`@Url.Action("FlagingFlag", "Home")?id=${encodeURIComponent(selectedPesertaId.value)}`, {
+            //        method: 'POST'
+            //    });
+            //    const data = await response.json();
+            //
+            //    if (data.isSuccess) {
+            //         ShowAlert("success", "Success!", "Redirecting to Flaging Page...");
+            //            setTimeout(function () {
+            //                window.location = '@Url.Action("Flaging", "Home")?idPeserta=' + encodeURIComponent(selectedPesertaId.value);
+            //            }, 1500);
+            //    } else {
+            //        ShowAlert('warning', 'Flaging Gagal', data.message || 'Gagal menyimpan Flaging');
+            //        LoadingButton(false, 'btnFlaging', 'Flaging Pensiun');
+            //    }
+            //}catch{
+            //    ShowAlert('danger', 'Error', 'Terjadi kesalahan saat memproses booking');
+            //    LoadingButton(false, 'btnFlaging', 'Flaging Pensiun');
+            //}
+            setTimeout(function () {
+                window.location = '@Url.Action("Flaging", "Home")?idPeserta=' + encodeURIComponent(selectedPesertaId.value);
+            }, 1500);
         }
 
         document.getElementById('btnFlaggingYes').addEventListener('click', function() {
-             flaggingModal.show();
-             window.location = '@Url.Action("Flaging", "Home")?idPeserta=' + encodeURIComponent(selectedPesertaId.value);
+            if (!selectedPesertaId.value) {
+                ShowAlert('warning', 'Data belum dipilih', 'Cari peserta terlebih dahulu sebelum melakukan Flaging.');
+                return;
+            }
+
+            flaggingModal.hide();
+            window.location = '@Url.Action("Flaging", "Home")?idPeserta=' + encodeURIComponent(selectedPesertaId.value);
         });
     </script>
 }

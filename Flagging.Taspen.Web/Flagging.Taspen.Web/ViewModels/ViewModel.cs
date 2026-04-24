@@ -48,8 +48,8 @@ namespace Flagging.Taspen.Web.ViewModels
         public string NoRekeningTabungan { get; set; }
         [Required]
         public string NIK { get; set; }
-        [Required]
-        public IFormFile SuratPernyataan { get; set; }
+        public string? Surat { get; set; }
+        public IFormFile? SuratPernyataan { get; set; }
         [Required]
         public DateTime TMTKredit { get; set; }
         [Required]

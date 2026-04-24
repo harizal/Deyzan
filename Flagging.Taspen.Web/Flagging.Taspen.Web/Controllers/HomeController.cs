@@ -149,9 +149,13 @@ namespace Flagging.Taspen.Web.Controllers
                 NoKPE = peserta.NoKPE,
                 TanggalLahir = peserta.TanggalLahir,
                 Instansi = peserta.Instansi,
+                IdProvinsi = peserta.IdProvinsi,
                 Provinsi = peserta.Provinsi,
+                IdKota = peserta.IdKota,
                 Kota = peserta.Kota,
+                IdKecamatan = peserta.IdKecamatan,
                 Kecamatan = peserta.Kecamatan,
+                IdKelurahan = peserta.IdKelurahan,
                 Kelurahan = peserta.Kelurahan,
                 Alamat = peserta.Alamat,
                 NoRekeningKredit = peserta.RekKredit,
@@ -160,11 +164,12 @@ namespace Flagging.Taspen.Web.Controllers
                 TMTKredit = peserta.TMTKredit,
                 TATKredit = peserta.TATKredit,
                 NoTel = peserta.NoTel,
+                Surat = peserta.Surat,
 
-                ProvinsiList = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(_context.Provinsi.OrderBy(m => m.Nama).ToList(), "Id", "Nama", peserta.Provinsi),
-                KotaList = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(_context.Kota.OrderBy(m => m.Nama).ToList(), "Id", "Nama", peserta.Kota),
-                KecamatanList = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(_context.Kecamatan.OrderBy(m => m.Nama).ToList(), "Id", "Nama", peserta.Kecamatan),
-                KelurahanList = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(_context.Kelurahan.OrderBy(m => m.Nama).ToList(), "Id", "Nama", peserta.Kelurahan)
+                ProvinsiList = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(_context.Provinsi.OrderBy(m => m.Nama).ToList(), "Id", "Nama", peserta.IdProvinsi),
+                KotaList = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(_context.Kota.OrderBy(m => m.Nama).ToList(), "Id", "Nama", peserta.IdKota),
+                KecamatanList = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(_context.Kecamatan.OrderBy(m => m.Nama).ToList(), "Id", "Nama", peserta.IdKecamatan),
+                KelurahanList = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(_context.Kelurahan.OrderBy(m => m.Nama).ToList(), "Id", "Nama", peserta.IdKelurahan)
 
             };
 
@@ -215,6 +220,11 @@ namespace Flagging.Taspen.Web.Controllers
             {
                 var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
                 return Json(new { success = false, message = string.Join(" ", errors) });
+            }
+
+            if (string.IsNullOrEmpty(model.Surat) && (model.SuratPernyataan == null || model.SuratPernyataan.Length == 0))
+            {
+                return Json(new { success = false, message = "Surat pernyataan wajib diunggah jika belum ada file sebelumnya." });
             }
 
             var peserta = await _context.Peserta.FirstOrDefaultAsync(p => p.Id == model.ID);

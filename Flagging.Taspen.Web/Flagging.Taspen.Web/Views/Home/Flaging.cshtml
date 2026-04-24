@@ -13,6 +13,7 @@
                 Flagging yang diberikan kepada debitur mitra bayar yang berstatus PNS Pensiun dan memastikan Dapem Pensiun akan dibayarkan pada Mitra Pemilik Flagging.
             </div>
             <input type="hidden" name="ID" value="@Model.ID" />
+            <input type="hidden" name="Surat" value="@Model.Surat" />
             <div class="row mb-1">
                 <div class="col-md-4">
                     <label class="form-label">NIP</label>
@@ -124,7 +125,13 @@
             <div class="row mb-1">
                 <div class="col-md-12">
                     <label class="form-label">Surat Pernyataan (PDF dan dibawah 1 MB)</label>
-                    <input type="file" class="form-control" name="SuratPernyataan" accept="application/pdf" required />
+                    <input type="file" class="form-control" name="SuratPernyataan" accept="application/pdf" @(string.IsNullOrEmpty(Model.Surat) ? "required" : null) />
+                    @if (!string.IsNullOrEmpty(Model.Surat))
+                    {
+                        <div class="form-text mt-2">
+                            File saat ini: <a target="_blank" href="@Url.Content("~/uploads/" + Model.Surat)">Download</a>. Pilih file baru jika ingin mengganti.
+                        </div>
+                    }
                 </div>
             </div>
             <div class="row mb-1">
