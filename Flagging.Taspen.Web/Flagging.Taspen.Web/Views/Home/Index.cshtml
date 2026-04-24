@@ -114,10 +114,32 @@
     </div>
 </div>
 
+<!-- Flaging Pensiun Confirmation Modal -->
+<div class="modal fade" id="flaggingModal" tabindex="-1" aria-labelledby="flaggingModalLabel" aria-hidden="true" data-coreui-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="flaggingModalLabel">Flaging Pensiun</h5>
+                <button type="button" class="btn-close" data-coreui-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Anda akan melakukan Flaging Pensiun ? Proses Flaging Pensiun akan dikenakan biaya sebesar Rp40.000,00 rupiah.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-coreui-dismiss="modal">No</button>
+                <button type="button" class="btn btn-primary" id="btnFlaggingYes">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     <script>
         const confirmModal = new coreui.Modal(document.getElementById('confirmModal'));
         const bookingModal = new coreui.Modal(document.getElementById('bookingModal'));
+
+        const flaggingModal = new coreui.Modal(document.getElementById('flaggingModal'));
+
         let searchInput = null;
         const selectedPesertaId = document.getElementById('selectedPesertaId');
 
@@ -233,25 +255,26 @@
                     await performSearch();
                 } else {
                     ShowAlert('warning', 'Booking Gagal', data.message || 'Gagal menyimpan booking');
+                    LoadingButton(false, 'btnBooking', 'Booking');
                 }
             } catch (error) {
                 ShowAlert('danger', 'Error', 'Terjadi kesalahan saat memproses booking');
-            } finally {
                 LoadingButton(false, 'btnBooking', 'Booking');
             }
         }
 
         async function flagging() {
-            isLoading(true);
-            try {
-                setTimeout(function() {
-                    isLoading(false);
-                }, 3000);
-            }
-            catch (error) {
-                ShowAlert('danger', 'Error', 'Terjadi kesalahan saat mencari data');
-            } finally {
-            }
+            flaggingModal.show();
+            //isLoading(true);
+            //try {
+            //    setTimeout(function() {
+            //        isLoading(false);
+            //    }, 3000);
+            //}
+            //catch (error) {
+            //    ShowAlert('danger', 'Error', 'Terjadi kesalahan saat mencari data');
+            //} finally {
+            //}
         }
 
         function isLoading(isLoading) {

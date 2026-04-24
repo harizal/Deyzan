@@ -72,5 +72,132 @@ namespace Flagging.Taspen.Web.Helpers
 
             return true;
         }
+
+        public static async Task<bool> SeedProvinsiKota(AppDataContext context)
+        {
+            if (context.Provinsi.Any()) return true;
+
+            // ── Provinsi ─────────────────────────────────────────────
+            var jabar = new Provinsi { Id = 1, Kode = "32", Nama = "Jawa Barat" };
+            var jateng = new Provinsi { Id = 2, Kode = "33", Nama = "Jawa Tengah" };
+            var dki = new Provinsi { Id = 3, Kode = "31", Nama = "DKI Jakarta" };
+
+            context.Provinsi.AddRange(jabar, jateng, dki);
+
+            // ── Kota ─────────────────────────────────────────────────
+            var kotaBandung = new Kota
+            {
+                Id = 1,
+                Kode = "3273",
+                Nama = "Kota Bandung",
+                Tipe = KotaTipe.Kota,
+                ProvinsiId = 1
+            };
+            var kabBandung = new Kota
+            {
+                Id = 2,
+                Kode = "3204",
+                Nama = "Kabupaten Bandung",
+                Tipe = KotaTipe.Kabupaten,
+                ProvinsiId = 1
+            };
+            var kotaSemarang = new Kota
+            {
+                Id = 3,
+                Kode = "3374",
+                Nama = "Kota Semarang",
+                Tipe = KotaTipe.Kota,
+                ProvinsiId = 2
+            };
+            var kotaJakartaPusat = new Kota
+            {
+                Id = 4,
+                Kode = "3171",
+                Nama = "Kota Jakarta Pusat",
+                Tipe = KotaTipe.Kota,
+                ProvinsiId = 3
+            };
+
+            context.Kota.AddRange(kotaBandung, kabBandung, kotaSemarang, kotaJakartaPusat);
+
+            // ── Kecamatan ─────────────────────────────────────────────
+            var kecCoblong = new Kecamatan
+            {
+                Id = 1,
+                Kode = "327307",
+                Nama = "Coblong",
+                KotaId = 1
+            };
+            var kecBandungWetan = new Kecamatan
+            {
+                Id = 2,
+                Kode = "327302",
+                Nama = "Bandung Wetan",
+                KotaId = 1
+            };
+            var kecCiwidey = new Kecamatan
+            {
+                Id = 3,
+                Kode = "320401",
+                Nama = "Ciwidey",
+                KotaId = 2
+            };
+            var kecSemarangTengah = new Kecamatan
+            {
+                Id = 4,
+                Kode = "337402",
+                Nama = "Semarang Tengah",
+                KotaId = 3
+            };
+            var kecGambir = new Kecamatan
+            {
+                Id = 5,
+                Kode = "317101",
+                Nama = "Gambir",
+                KotaId = 4
+            };
+
+            context.Kecamatan.AddRange(kecCoblong, kecBandungWetan, kecCiwidey, kecSemarangTengah, kecGambir);
+
+            // ── Kelurahan ─────────────────────────────────────────────
+            var kelurahan = new List<Kelurahan>
+            {
+                // Coblong - Bandung
+                new() { Id = 1, Kode = "3273071001", Nama = "Dago",
+                        KodePos = "40135", Tipe = KelurahanTipe.Kelurahan, KecamatanId = 1 },
+                new() { Id = 2, Kode = "3273071002", Nama = "Lebak Gede",
+                        KodePos = "40132", Tipe = KelurahanTipe.Kelurahan, KecamatanId = 1 },
+                new() { Id = 3, Kode = "3273071003", Nama = "Cipaganti",
+                        KodePos = "40131", Tipe = KelurahanTipe.Kelurahan, KecamatanId = 1 },
+
+                // Bandung Wetan
+                new() { Id = 4, Kode = "3273021001", Nama = "Tamansari",
+                        KodePos = "40116", Tipe = KelurahanTipe.Kelurahan, KecamatanId = 2 },
+                new() { Id = 5, Kode = "3273021002", Nama = "Citarum",
+                        KodePos = "40115", Tipe = KelurahanTipe.Kelurahan, KecamatanId = 2 },
+
+                // Ciwidey - Kab. Bandung (Desa)
+                new() { Id = 6, Kode = "3204011001", Nama = "Ciwidey",
+                        KodePos = "40973", Tipe = KelurahanTipe.Desa, KecamatanId = 3 },
+                new() { Id = 7, Kode = "3204011002", Nama = "Lebakmuncang",
+                        KodePos = "40973", Tipe = KelurahanTipe.Desa, KecamatanId = 3 },
+
+                // Semarang Tengah
+                new() { Id = 8, Kode = "3374021001", Nama = "Miroto",
+                        KodePos = "50134", Tipe = KelurahanTipe.Kelurahan, KecamatanId = 4 },
+                new() { Id = 9, Kode = "3374021002", Nama = "Brumbungan",
+                        KodePos = "50138", Tipe = KelurahanTipe.Kelurahan, KecamatanId = 4 },
+
+                // Gambir - Jakarta Pusat
+                new() { Id = 10, Kode = "3171011001", Nama = "Gambir",
+                        KodePos = "10110", Tipe = KelurahanTipe.Kelurahan, KecamatanId = 5 },
+                new() { Id = 11, Kode = "3171011002", Nama = "Cideng",
+                        KodePos = "10150", Tipe = KelurahanTipe.Kelurahan, KecamatanId = 5 },
+            };
+
+            context.Kelurahan.AddRange(kelurahan);
+            await context.SaveChangesAsync();
+            return true;
+        }
     }
 }

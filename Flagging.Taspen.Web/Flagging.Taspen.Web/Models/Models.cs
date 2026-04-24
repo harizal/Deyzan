@@ -1,5 +1,17 @@
 ﻿namespace Flagging.Taspen.Web.Models
 {
+    public enum KotaTipe
+    {
+        Kota,
+        Kabupaten
+    }
+
+    public enum KelurahanTipe
+    {
+        Kelurahan,
+        Desa
+    }
+
     public class Peserta : BaseModel
     {
         public string NIP { get; set; }
@@ -22,5 +34,52 @@
 
         public bool IsBooking { get; set; }
         public DateTime? IsBookingDate { get; set; }
+    }
+
+    public class Provinsi
+    {
+        public int Id { get; set; }
+        public string Kode { get; set; }        // "32" = Jawa Barat
+        public string Nama { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+        public ICollection<Kota> Kota { get; set; } = new List<Kota>();
+    }
+
+    public class Kota
+    {
+        public int Id { get; set; }
+        public string Kode { get; set; }        // "3204" = Kab. Bandung
+        public string Nama { get; set; }
+        public KotaTipe Tipe { get; set; }
+
+        public int ProvinsiId { get; set; }
+        public Provinsi Provinsi { get; set; }
+
+        public ICollection<Kecamatan> Kecamatan { get; set; } = new List<Kecamatan>();
+    }
+
+    public class Kecamatan
+    {
+        public int Id { get; set; }
+        public string Kode { get; set; }        // "320401" = Kec. Ciwidey
+        public string Nama { get; set; }
+
+        public int KotaId { get; set; }
+        public Kota Kota { get; set; }
+
+        public ICollection<Kelurahan> Kelurahan { get; set; } = new List<Kelurahan>();
+    }
+
+    public class Kelurahan
+    {
+        public int Id { get; set; }
+        public string Kode { get; set; }        // "3204011001"
+        public string Nama { get; set; }
+        public string KodePos { get; set; }
+        public KelurahanTipe Tipe { get; set; }
+
+        public int KecamatanId { get; set; }
+        public Kecamatan Kecamatan { get; set; }
     }
 }

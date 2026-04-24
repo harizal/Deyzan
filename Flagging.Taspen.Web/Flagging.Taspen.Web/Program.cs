@@ -55,6 +55,7 @@ using (var scope = app.Services.CreateScope())
 
     var context = serviceProvider.GetRequiredService<AppDataContext>();
     await SeedHelper.SeedUserAndRoles(userManager, roleManager, context);
+    await SeedHelper.SeedProvinsiKota(context);
 }
 
 app.UseHttpsRedirection();

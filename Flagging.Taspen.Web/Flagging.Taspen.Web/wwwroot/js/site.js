@@ -26,7 +26,7 @@ function ShowAlert(alertType, title, message) {
     // Auto close after 1 second
     setTimeout(function () {
         $("#" + alertId).find(".alert")
-            .fadeOut(500, function () {
+            .fadeOut(2000, function () {
                 $("#" + alertId).empty();
             });
     }, 1500);
