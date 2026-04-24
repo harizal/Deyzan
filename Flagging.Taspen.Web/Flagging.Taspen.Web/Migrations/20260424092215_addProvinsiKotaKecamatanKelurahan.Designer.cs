@@ -3,6 +3,7 @@ using System;
 using Flagging.Taspen.Web.DBContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Flagging.Taspen.Web.Migrations
 {
     [DbContext(typeof(AppDataContext))]
-    partial class AppDataContextModelSnapshot : ModelSnapshot
+    [Migration("20260424092215_addProvinsiKotaKecamatanKelurahan")]
+    partial class addProvinsiKotaKecamatanKelurahan
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.7");
@@ -183,22 +186,6 @@ namespace Flagging.Taspen.Web.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("IdKecamatan")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("IdKelurahan")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("IdKota")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("IdProvinsi")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Instansi")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -210,12 +197,6 @@ namespace Flagging.Taspen.Web.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime?>("IsBookingDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool>("IsFlaging")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime?>("IsFlagingDate")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Kecamatan")

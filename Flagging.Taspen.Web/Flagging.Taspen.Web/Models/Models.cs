@@ -20,9 +20,13 @@
         public string Nama { get; set; }
         public DateTime TanggalLahir { get; set; }
         public string Instansi { get; set; }
+        public string IdProvinsi { get; set; }
         public string Provinsi { get; set; }
+        public string IdKota { get; set; }
         public string Kota { get; set; }
+        public string IdKecamatan { get; set; }
         public string Kecamatan { get; set; }
+        public string IdKelurahan { get; set; }
         public string Kelurahan { get; set; }
         public string Alamat { get; set; }
         public string RekKredit { get; set; }
@@ -34,6 +38,9 @@
 
         public bool IsBooking { get; set; }
         public DateTime? IsBookingDate { get; set; }
+
+        public bool IsFlaging { get; set; }
+        public DateTime? IsFlagingDate { get; set; }
     }
 
     public class Provinsi

@@ -1,0 +1,253 @@
+@model Flagging.Taspen.Web.ViewModels.FlagingPensiunViewModel
+@{
+    ViewData["Title"] = "Flaging Pensiun";
+}
+
+<div class="card col-md-12">
+    <div class="card-header"><strong>Flaging Pensiun</strong></div>
+    <div class="card-body">
+        <form asp-action="Flaging" asp-controller="Home" method="post" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+            <div class="alert alert-warning fade show" role="alert">
+                Flagging yang diberikan kepada debitur mitra bayar yang berstatus PNS Pensiun dan memastikan Dapem Pensiun akan dibayarkan pada Mitra Pemilik Flagging.
+            </div>
+            <input type="hidden" name="ID" value="@Model.ID" />
+            <div class="row mb-1">
+                <div class="col-md-4">
+                    <label class="form-label">NIP</label>
+                    <input class="form-control" value="@Model.NIP" disabled />
+                    <input type="hidden" name="NIP" value="@Model.NIP" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Notas</label>
+                    <input class="form-control" value="@Model.Notas" disabled />
+                    <input type="hidden" name="Notas" value="@Model.Notas" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">No KPE</label>
+                    <input class="form-control" value="@Model.NoKPE" disabled />
+                    <input type="hidden" name="NoKPE" value="@Model.NoKPE" />
+                </div>
+            </div>
+            <div class="row mb-1">
+                <div class="col-md-8">
+                    <label class="form-label">Nama</label>
+                    <input class="form-control" value="@Model.Nama" disabled />
+                    <input type="hidden" name="Nama" value="@Model.Nama" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Tanggal Lahir Penerima</label>
+                    <input class="form-control" value="@Model.TanggalLahir.ToString("yyyy-MM")" disabled />
+                    <input type="hidden" name="TanggalLahir" value="@Model.TanggalLahir.ToString("yyyy-MM-dd")" />
+                </div>
+            </div>
+            <div class="row mb-1">
+                <div class="col-md-4">
+                    <label class="form-label">Tanggal BUP Wafat</label>
+                    <input class="form-control" value="@Model.TanggalBUP" disabled />
+                    <input type="hidden" name="TanggalBUP" value="@Model.TanggalBUP" />
+                </div>
+                <div class="col-md-8">
+                    <label class="form-label">Instansi</label>
+                    <input class="form-control" value="@Model.Instansi" disabled />
+                    <input type="hidden" name="Instansi" value="@Model.Instansi" />
+                </div>                
+            </div>
+
+            <div class="row mb-1">
+                <div class="col-md-3">
+                    <label class="form-label">Provinsi</label>
+                    <select id="provinsi" name="IdProvinsi" class="form-select" required>
+                        <option value="">-- Pilih Provinsi --</option>
+                        @foreach (var p in Model.ProvinsiList)
+                        {
+                            <option value="@p.Value" selected="@((p.Value == Model.IdProvinsi) ? "selected" : null)">@p.Text</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Kota</label>
+                    <select id="kota" name="IdKota" class="form-select" required>
+                        <option value="">-- Pilih Kota --</option>
+                        @foreach (var p in Model.KotaList)
+                        {
+                            <option value="@p.Value" selected="@((p.Value == Model.IdKota) ? "selected" : null)">@p.Text</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Kecamatan</label>
+                    <select id="kecamatan" name="IdKecamatan" class="form-select" required>
+                        <option value="">-- Pilih Kecamatan --</option>
+                        @foreach (var p in Model.KecamatanList)
+                        {
+                            <option value="@p.Value" selected="@((p.Value == Model.IdKecamatan) ? "selected" : null)">@p.Text</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Kelurahan</label>
+                    <select id="kelurahan" name="IdKelurahan" class="form-select" required>
+                        <option value="">-- Pilih Kelurahan --</option>
+                        @foreach (var p in Model.KelurahanList)
+                        {
+                            <option value="@p.Value" selected="@((p.Value == Model.IdKelurahan) ? "selected" : null)">@p.Text</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <div class="row mb-1">
+                <div class="col-md-12">
+                    <label class="form-label">Alamat</label>
+                    <textarea class="form-control" name="Alamat">@Model.Alamat</textarea>
+                </div>
+            </div>
+            <div class="row mb-1">
+                <div class="col-md-6">
+                    <label class="form-label">No Rekening Kredit</label>
+                    <input class="form-control" name="NoRekeningKredit" value="@Model.NoRekeningKredit" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">No Rekening Tabungan</label>
+                    <input class="form-control" name="NoRekeningTabungan" value="@Model.NoRekeningTabungan" />
+                </div>
+            </div>
+            <div class="row mb-1">
+                <div class="col-md-12">
+                    <label class="form-label">NIK Peserta</label>
+                    <input class="form-control" name="NIK" value="@Model.NIK" />
+                </div>
+            </div>
+
+            <div class="row mb-1">
+                <div class="col-md-12">
+                    <label class="form-label">Surat Pernyataan (PDF dan dibawah 1 MB)</label>
+                    <input type="file" class="form-control" name="SuratPernyataan" accept="application/pdf" required />
+                </div>
+            </div>
+            <div class="row mb-1">
+                <div class="col-md-4">
+                    <label class="form-label">TMT Kredit</label>
+                    <input type="date" class="form-control" name="TMTKredit" value="@(Model.TMTKredit == default ? "" : Model.TMTKredit.ToString("yyyy-MM-dd"))" required />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">TAT Kredit</label>
+                    <input type="date" class="form-control" name="TATKredit" value="@(Model.TATKredit == default ? "" : Model.TATKredit.ToString("yyyy-MM-dd"))" required />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">No Telepon Peserta</label>
+                    <input class="form-control" name="NoTel" value="@Model.NoTel" required />
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end">
+                <a class="btn btn-secondary me-2" href="@Url.Action("Index", "Home")">Batal</a>
+                <button type="submit" class="btn btn-primary">Simpan</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        async function loadKota(provinsiId) {
+            if (!provinsiId) {
+                $('#kota').empty().append('<option value="">-- Pilih Kota --</option>');
+                $('#kecamatan').empty().append('<option value="">-- Pilih Kecamatan --</option>');
+                $('#kelurahan').empty().append('<option value="">-- Pilih Kelurahan --</option>');
+                return;
+            }
+
+            const res = await fetch('@Url.Action("GetKota","Home")?provinsiId=' + provinsiId);
+            const data = await res.json();
+            $('#kota').empty().append('<option value="">-- Pilih Kota --</option>');
+            $('#kecamatan').empty().append('<option value="">-- Pilih Kecamatan --</option>');
+            $('#kelurahan').empty().append('<option value="">-- Pilih Kelurahan --</option>');
+            data.forEach(function (item) {
+                $('#kota').append(`<option value="${item.id}">${item.name}</option>`);
+            });
+        }
+
+        async function loadKecamatan(kotaId) {
+            if (!kotaId) {
+                $('#kecamatan').empty().append('<option value="">-- Pilih Kecamatan --</option>');
+                $('#kelurahan').empty().append('<option value="">-- Pilih Kelurahan --</option>');
+                return;
+            }
+
+            const res = await fetch('@Url.Action("GetKecamatan","Home")?kotaId=' + kotaId);
+            const data = await res.json();
+            $('#kecamatan').empty().append('<option value="">-- Pilih Kecamatan --</option>');
+            $('#kelurahan').empty().append('<option value="">-- Pilih Kelurahan --</option>');
+            data.forEach(function (item) {
+                $('#kecamatan').append(`<option value="${item.id}">${item.name}</option>`);
+            });
+        }
+
+        async function loadKelurahan(kecamatanId) {
+            if (!kecamatanId) {
+                $('#kelurahan').empty().append('<option value="">-- Pilih Kelurahan --</option>');
+                return;
+            }
+
+            const res = await fetch('@Url.Action("GetKelurahan","Home")?kecamatanId=' + kecamatanId);
+            const data = await res.json();
+            $('#kelurahan').empty().append('<option value="">-- Pilih Kelurahan --</option>');
+            data.forEach(function (item) {
+                $('#kelurahan').append(`<option value="${item.id}">${item.name}</option>`);
+            });
+        }
+
+        $(function () {
+            var selProv = $('#provinsi');
+            var selKota = $('#kota');
+            var selKec = $('#kecamatan');
+
+            selProv.on('change', function () {
+                loadKota($(this).val());
+            });
+
+            selKota.on('change', function () {
+                loadKecamatan($(this).val());
+            });
+
+            selKec.on('change', function () {
+                loadKelurahan($(this).val());
+            });
+
+            // If model has selected values, trigger loads to populate dependent lists
+            var provVal = '@Model.Provinsi';
+            var kotaVal = '@Model.Kota';
+            var kecVal = '@Model.Kecamatan';
+            var kelVal = '@Model.Kelurahan';
+
+            // If Provinsi is actually an id (from model) try to load
+            if (provVal) {
+                // try parse to int
+                var pid = parseInt(provVal);
+                if (!isNaN(pid)) {
+                    loadKota(pid).then(function () {
+                        if (kotaVal) {
+                            $('#kota').val(kotaVal);
+                            var kid = parseInt(kotaVal);
+                            if (!isNaN(kid)) {
+                                loadKecamatan(kid).then(function () {
+                                    if (kecVal) {
+                                        $('#kecamatan').val(kecVal);
+                                        var kecid = parseInt(kecVal);
+                                        if (!isNaN(kecid)) {
+                                            loadKelurahan(kecid).then(function () {
+                                                if (kelVal) $('#kelurahan').val(kelVal);
+                                            });
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    </script>
+}

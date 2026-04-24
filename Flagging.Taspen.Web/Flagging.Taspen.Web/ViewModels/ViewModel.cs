@@ -1,3 +1,6 @@
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel.DataAnnotations;
+
 namespace Flagging.Taspen.Web.ViewModels
 {
     public class PesertaViewModel
@@ -13,24 +16,48 @@ namespace Flagging.Taspen.Web.ViewModels
 
     public class FlagingPensiunViewModel
     {
+        public string ID { get; set; }
         public string NIP { get; set; }
         public string Notas { get; set; }
         public string NoKPE { get; set; }
         public string Nama { get; set; }
         public DateTime TanggalLahir { get; set; }
+        public string TanggalBUP { get; set; }
         public string Instansi { get; set; }
 
+        [Required]
+        public string IdProvinsi { get; set; }
+        // Provinsi (nama) kept for display; IdProvinsi is posted
         public string Provinsi { get; set; }
+        [Required]
+        public string IdKota { get; set; }
         public string Kota { get; set; }
+        [Required]
+        public string IdKecamatan { get; set; }
         public string Kecamatan { get; set; }
+        [Required]
+        public string IdKelurahan { get; set; }
         public string Kelurahan { get; set; }
+        [Required]
         public string Alamat { get; set; }
+        [Required]
         public string NoRekeningKredit { get; set; }
+        [Required]
         public string NoRekeningTabungan { get; set; }
+        [Required]
         public string NIK { get; set; }
+        [Required]
         public IFormFile SuratPernyataan { get; set; }
+        [Required]
         public DateTime TMTKredit { get; set; }
+        [Required]
         public DateTime TATKredit { get; set; }
+        [Required]
         public string NoTel { get; set; }
+
+        public SelectList ProvinsiList { get; set; }
+        public SelectList KotaList { get; set; }
+        public SelectList KecamatanList { get; set; }
+        public SelectList KelurahanList { get; set; }
     }
 }

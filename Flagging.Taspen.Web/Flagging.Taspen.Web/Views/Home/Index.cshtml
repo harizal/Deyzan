@@ -265,26 +265,34 @@
 
         async function flagging() {
             flaggingModal.show();
-            //isLoading(true);
-            //try {
-            //    setTimeout(function() {
-            //        isLoading(false);
-            //    }, 3000);
-            //}
-            //catch (error) {
-            //    ShowAlert('danger', 'Error', 'Terjadi kesalahan saat mencari data');
-            //} finally {
-            //}
         }
 
-        function isLoading(isLoading) {
-            if (isLoading) {
-                LoadingButton(true, 'btnBooking', 'Booking');
-                LoadingButton(true, 'btnTextFlaging', 'Flaging Pensiun');
-            } else {
-                LoadingButton(false, 'btnBooking', 'Booking');
-                LoadingButton(false, 'btnTextFlaging', 'Flaging Pensiun');
+        async function performFlaging(){
+            LoadingButton(true, 'btnFlaging', 'Flaging Pensiun');
+            try{
+                 const response = await fetch(`@Url.Action("FlagingFlag", "Home")?id=${encodeURIComponent(selectedPesertaId.value)}`, {
+                    method: 'POST'
+                });
+                const data = await response.json();
+
+                if (data.isSuccess) {
+                     ShowAlert("success", "Success!", "Redirecting to Flaging Page...");
+                        setTimeout(function () {
+                            window.location = '@Url.Action("Flaging", "Home")?idPeserta=' + encodeURIComponent(selectedPesertaId.value);
+                        }, 1500);
+                } else {
+                    ShowAlert('warning', 'Flaging Gagal', data.message || 'Gagal menyimpan Flaging');
+                    LoadingButton(false, 'btnFlaging', 'Flaging Pensiun');
+                }
+            }catch{
+                ShowAlert('danger', 'Error', 'Terjadi kesalahan saat memproses booking');
+                LoadingButton(false, 'btnFlaging', 'Flaging Pensiun');
             }
         }
+
+        document.getElementById('btnFlaggingYes').addEventListener('click', function() {
+             flaggingModal.show();
+             window.location = '@Url.Action("Flaging", "Home")?idPeserta=' + encodeURIComponent(selectedPesertaId.value);
+        });
     </script>
 }
