@@ -60,6 +60,14 @@
                               <span id="status"></span>
                             </div>
                         </div>
+                        <div class="alert alert-warning d-flex align-items-center" role="alert">
+                            <svg class="icon-info">
+                                <use xlink:href="../lib/coreui-icons/svg/free/cil-info.svg"></use>
+                            </svg>
+                            <div>
+                                <span id="statusFlaging"></span>
+                            </div>
+                        </div>
                    </div>
                 </div>
                 <input type="hidden" id="selectedPesertaId" />
@@ -68,7 +76,7 @@
                <button type="button" class="btn btn-primary" id="btnBooking" onclick="booking()">
                     <span id="btnTextBooking">Booking</span>
                 </button>
-                <button type="button" class="btn btn-success" id="btnFlaging" onclick="flagging()">
+                <button type="button" class="btn btn-success ms-2" id="btnFlaging" onclick="flagging()">
                     <span id="btnTextFlaging">Flaging Pensiun</span>
                 </button>
             </div>
@@ -199,8 +207,10 @@
                     $("#tanggalBUP").val(data.data.tanggalBUP);
                     $("#instansi").val(data.data.instansi);
                     $("#status").text(data.data.status);
-                    selectedPesertaId.value = data.data.id;
+                    $("#statusFlaging").text(data.data.status);
+                    selectedPesertaId.value = data.data.statusFlaging;
                     updateBookingButton(data.data.isBooking);
+                    updateFlagingButton(data.data.isFlaging);
 
                     resultCard.style.display = 'block';
                 } else {
@@ -226,6 +236,22 @@
                 bookingButton.classList.remove('btn-secondary');
                 bookingButton.classList.add('btn-primary');
                 bookingButton.innerText = 'Booking';
+            }
+        }
+
+        function updateFlagingButton(isFlaging) {
+            const flagingButton = document.getElementById('btnFlaging');
+            if (!flagingButton) return;
+
+            flagingButton.disabled = isFlaging;
+            if (isFlaging) {
+                flagingButton.classList.remove('btn-primary');
+                flagingButton.classList.add('btn-secondary');
+                flagingButton.innerText = 'Sudah Booking';
+            } else {
+                flagingButton.classList.remove('btn-secondary');
+                flagingButton.classList.add('btn-primary');
+                flagingButton.innerText = 'Booking';
             }
         }
 

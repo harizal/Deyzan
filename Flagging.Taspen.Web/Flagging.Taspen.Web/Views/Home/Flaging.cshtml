@@ -5,8 +5,9 @@
 
 <div class="card col-md-12">
     <div class="card-header"><strong>Flaging Pensiun</strong></div>
-    <div class="card-body">
-        <form asp-action="Flaging" asp-controller="Home" method="post" enctype="multipart/form-data">
+
+    <form id="flagingForm" asp-action="Flaging" asp-controller="Home" method="post" enctype="multipart/form-data">
+        <div class="card-body">
             @Html.AntiForgeryToken()
             <div class="alert alert-warning fade show" role="alert">
                 Flagging yang diberikan kepada debitur mitra bayar yang berstatus PNS Pensiun dan memastikan Dapem Pensiun akan dibayarkan pada Mitra Pemilik Flagging.
@@ -51,7 +52,7 @@
                     <label class="form-label">Instansi</label>
                     <input class="form-control" value="@Model.Instansi" disabled />
                     <input type="hidden" name="Instansi" value="@Model.Instansi" />
-                </div>                
+                </div>
             </div>
 
             <div class="row mb-1">
@@ -141,16 +142,51 @@
                 </div>
             </div>
 
-            <div class="d-flex justify-content-end">
-                <a class="btn btn-secondary me-2" href="@Url.Action("Index", "Home")">Batal</a>
-                <button type="submit" class="btn btn-primary">Simpan</button>
-            </div>
-        </form>
-    </div>
+
+        </div>
+
+        <div class="card-footer text-body-secondary">
+            <a class="btn btn-secondary me-2" href="@Url.Action("Index", "Home")">Batal</a>
+            <button id="btnSubmit" type="submit" class="btn btn-primary ms-2">Simpan</button>
+        </div>
+    </form>
 </div>
 
 @section Scripts {
     <script>
+        $("#flagingForm").on("submit", function (e) {
+            e.preventDefault(); // stop normal POST
+
+            const form = $(this);
+            const actionUrl = form.attr("action");
+
+            LoadingButton(true, 'btnSubmit', 'Simpan');
+
+            $.ajax({
+                url: actionUrl,
+                type: "POST",
+                data: new FormData(this),
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response.success) {
+                        ShowAlert("success", "Success!", "Flaging berhasil disimpan. Redirecting...");                        
+                        setTimeout(function () {
+                            window.location.href = response.redirectUrl;
+                        }, 1500);
+                    } else {
+                        ShowAlert("danger", "Failed!", response.message);
+                        LoadingButton(false, 'btnSubmit', 'Simpan');
+                    }
+                },
+                error: function () {
+                    ShowAlert("danger", "Failed!", "Terjadi kesalahan saat menyimpan data.");
+                    LoadingButton(false, 'btnSubmit', 'Simpan');
+                }
+            });
+        });
+
+        // Existing scripts for dropdowns
         async function loadKota(provinsiId) {
             if (!provinsiId) {
                 $('#kota').empty().append('<option value="">-- Pilih Kota --</option>');
@@ -159,7 +195,7 @@
                 return;
             }
 
-            const res = await fetch('@Url.Action("GetKota","Home")?provinsiId=' + provinsiId);
+            const res = await fetch('@Url.Action("GetKota", "Home")?provinsiId=' + provinsiId);
             const data = await res.json();
             $('#kota').empty().append('<option value="">-- Pilih Kota --</option>');
             $('#kecamatan').empty().append('<option value="">-- Pilih Kecamatan --</option>');
@@ -176,7 +212,7 @@
                 return;
             }
 
-            const res = await fetch('@Url.Action("GetKecamatan","Home")?kotaId=' + kotaId);
+            const res = await fetch('@Url.Action("GetKecamatan", "Home")?kotaId=' + kotaId);
             const data = await res.json();
             $('#kecamatan').empty().append('<option value="">-- Pilih Kecamatan --</option>');
             $('#kelurahan').empty().append('<option value="">-- Pilih Kelurahan --</option>');
@@ -191,13 +227,26 @@
                 return;
             }
 
-            const res = await fetch('@Url.Action("GetKelurahan","Home")?kecamatanId=' + kecamatanId);
+            const res = await fetch('@Url.Action("GetKelurahan", "Home")?kecamatanId=' + kecamatanId);
             const data = await res.json();
             $('#kelurahan').empty().append('<option value="">-- Pilih Kelurahan --</option>');
             data.forEach(function (item) {
                 $('#kelurahan').append(`<option value="${item.id}">${item.name}</option>`);
             });
         }
+
+        // Event listeners for dropdowns
+        $('#provinsi').change(function () {
+            loadKota($(this).val());
+        });
+
+        $('#kota').change(function () {
+            loadKecamatan($(this).val());
+        });
+
+        $('#kecamatan').change(function () {
+            loadKelurahan($(this).val());
+        });
 
         $(function () {
             var selProv = $('#provinsi');

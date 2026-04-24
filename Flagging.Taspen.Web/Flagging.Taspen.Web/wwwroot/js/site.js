@@ -10,6 +10,9 @@
 }
 
 function ShowAlert(alertType, title, message) {
+
+    $("html, body").animate({ scrollTop: 0 }, "slow");
+
     const alertId = 'dynamicGlobalAlert';
 
     // Remove existing alert if any
@@ -26,7 +29,7 @@ function ShowAlert(alertType, title, message) {
     // Auto close after 1 second
     setTimeout(function () {
         $("#" + alertId).find(".alert")
-            .fadeOut(2000, function () {
+            .fadeOut(4000, function () {
                 $("#" + alertId).empty();
             });
     }, 1500);

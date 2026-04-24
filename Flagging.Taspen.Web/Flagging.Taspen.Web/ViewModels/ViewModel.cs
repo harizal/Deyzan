@@ -10,8 +10,10 @@ namespace Flagging.Taspen.Web.ViewModels
         public string TanggalLahir { get; set; }
         public string TanggalBUP { get; set; }
         public string Instansi { get; set; }
-        public string Status { get; set; } = "Belum Floging Pensiun";
+        public string Status { get; set; } = "Belum Booking Pensiun";
         public bool IsBooking { get; set; }
+        public string StatusFlaging { get; set; } = "Belum Flaging Pensiun";
+        public bool IsFlaging { get; set; }
     }
 
     public class FlagingPensiunViewModel
@@ -22,22 +24,22 @@ namespace Flagging.Taspen.Web.ViewModels
         public string NoKPE { get; set; }
         public string Nama { get; set; }
         public DateTime TanggalLahir { get; set; }
-        public string TanggalBUP { get; set; }
+        public string? TanggalBUP { get; set; }
         public string Instansi { get; set; }
 
         [Required]
         public string IdProvinsi { get; set; }
         // Provinsi (nama) kept for display; IdProvinsi is posted
-        public string Provinsi { get; set; }
+        public string? Provinsi { get; set; }
         [Required]
         public string IdKota { get; set; }
-        public string Kota { get; set; }
+        public string? Kota { get; set; }
         [Required]
         public string IdKecamatan { get; set; }
-        public string Kecamatan { get; set; }
+        public string? Kecamatan { get; set; }
         [Required]
         public string IdKelurahan { get; set; }
-        public string Kelurahan { get; set; }
+        public string? Kelurahan { get; set; }
         [Required]
         public string Alamat { get; set; }
         [Required]
@@ -55,9 +57,9 @@ namespace Flagging.Taspen.Web.ViewModels
         [Required]
         public string NoTel { get; set; }
 
-        public SelectList ProvinsiList { get; set; }
-        public SelectList KotaList { get; set; }
-        public SelectList KecamatanList { get; set; }
-        public SelectList KelurahanList { get; set; }
+        public SelectList? ProvinsiList { get; set; }
+        public SelectList? KotaList { get; set; }
+        public SelectList? KecamatanList { get; set; }
+        public SelectList? KelurahanList { get; set; }
     }
 }

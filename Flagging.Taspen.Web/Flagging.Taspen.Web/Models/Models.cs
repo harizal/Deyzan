@@ -35,6 +35,7 @@
         public string Surat { get; set; }
         public DateTime TMTKredit { get; set; }
         public DateTime TATKredit { get; set; }
+        public string NoTel { get; set; }
 
         public bool IsBooking { get; set; }
         public DateTime? IsBookingDate { get; set; }

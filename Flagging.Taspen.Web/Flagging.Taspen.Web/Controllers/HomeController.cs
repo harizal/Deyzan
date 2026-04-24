@@ -49,8 +49,11 @@ namespace Flagging.Taspen.Web.Controllers
                     TanggalLahir = peserta.TanggalLahir.ToString("yyyy-MM"),
                     TanggalBUP = "",
                     Instansi = peserta.Instansi,
-                    Status = peserta.IsBooking ? $"Booking aktif sejak {peserta.IsBookingDate:yyyy-MM-dd HH:mm}" : "Belum booking",
-                    IsBooking = peserta.IsBooking
+                    Status = peserta.IsBooking ? $"Booking aktif sejak {peserta.IsBookingDate:yyyy-MM-dd HH:mm}" : "Belum Booking",
+                    IsBooking = peserta.IsBooking,
+                    StatusFlaging = peserta.IsFlaging ? $"Flaging aktif sejak {peserta.IsFlagingDate:yyyy-MM-dd HH:mm}" : "Belum Flaging",
+                    IsFlaging = peserta.IsFlaging
+                    
                 };
 
                 return Json(new BaseViewModel<PesertaViewModel>
@@ -156,6 +159,7 @@ namespace Flagging.Taspen.Web.Controllers
                 NIK = peserta.NIK,
                 TMTKredit = peserta.TMTKredit,
                 TATKredit = peserta.TATKredit,
+                NoTel = peserta.NoTel,
 
                 ProvinsiList = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(_context.Provinsi.OrderBy(m => m.Nama).ToList(), "Id", "Nama", peserta.Provinsi),
                 KotaList = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(_context.Kota.OrderBy(m => m.Nama).ToList(), "Id", "Nama", peserta.Kota),
@@ -209,31 +213,60 @@ namespace Flagging.Taspen.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                // Rebuild select lists
-                model.ProvinsiList = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(_context.Provinsi.OrderBy(m => m.Nama).ToList(), "Id", "Nama", model.Provinsi);
-                model.KotaList = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(_context.Kota.OrderBy(m => m.Nama).ToList(), "Id", "Nama", model.Kota);
-                model.KecamatanList = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(_context.Kecamatan.OrderBy(m => m.Nama).ToList(), "Id", "Nama", model.Kecamatan);
-                model.KelurahanList = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(_context.Kelurahan.OrderBy(m => m.Nama).ToList(), "Id", "Nama", model.Kelurahan);
-                return View(model);
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                return Json(new { success = false, message = string.Join(" ", errors) });
             }
+
+            var peserta = await _context.Peserta.FirstOrDefaultAsync(p => p.Id == model.ID);
+            if (peserta == null)
+            {
+                return Json(new { success = false, message = "Peserta tidak ditemukan" });
+            }
+
+            // Update peserta fields
+            peserta.IdProvinsi = model.IdProvinsi;
+            peserta.Provinsi = _context.Provinsi.FirstOrDefault(p => p.Id.ToString() == model.IdProvinsi)?.Nama ?? "";
+            peserta.IdKota = model.IdKota;
+            peserta.Kota = _context.Kota.FirstOrDefault(k => k.Id.ToString() == model.IdKota)?.Nama ?? "";
+            peserta.IdKecamatan = model.IdKecamatan;
+            peserta.Kecamatan = _context.Kecamatan.FirstOrDefault(k => k.Id.ToString() == model.IdKecamatan)?.Nama ?? "";
+            peserta.IdKelurahan = model.IdKelurahan;
+            peserta.Kelurahan = _context.Kelurahan.FirstOrDefault(k => k.Id.ToString() == model.IdKelurahan)?.Nama ?? "";
+            peserta.Alamat = model.Alamat;
+            peserta.RekKredit = model.NoRekeningKredit;
+            peserta.RekTabungan = model.NoRekeningTabungan;
+            peserta.NIK = model.NIK;
+            peserta.TMTKredit = model.TMTKredit;
+            peserta.TATKredit = model.TATKredit;
+            peserta.NoTel = model.NoTel;
 
             // Handle file upload
             if (model.SuratPernyataan != null && model.SuratPernyataan.Length > 0)
             {
+                if (model.SuratPernyataan.Length > 1024 * 1024) // 1 MB
+                {
+                    return Json(new { success = false, message = "File terlalu besar. Maksimal 1 MB." });
+                }
+
                 var uploads = Path.Combine("wwwroot", "uploads");
                 if (!Directory.Exists(uploads)) Directory.CreateDirectory(uploads);
 
-                var fileName = Path.GetRandomFileName() + Path.GetExtension(model.SuratPernyataan.FileName);
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(model.SuratPernyataan.FileName);
                 var filePath = Path.Combine(uploads, fileName);
                 using (var stream = System.IO.File.Create(filePath))
                 {
                     await model.SuratPernyataan.CopyToAsync(stream);
                 }
+                peserta.Surat = fileName;
             }
 
-            // TODO: map model back to Peserta or store Flaging record. For now just redirect with success message.
-            TempData["FlashMessage"] = "Flaging berhasil disimpan.";
-            return RedirectToAction("Index");
+            // Set flaging flag
+            peserta.IsFlaging = true;
+            peserta.IsFlagingDate = DateTime.Now;
+
+            await _context.SaveChangesAsync();
+
+            return Json(new { success = true, message = "Flaging berhasil disimpan", redirectUrl = Url.Action("Index", "Home") });
         }
     }
 }
