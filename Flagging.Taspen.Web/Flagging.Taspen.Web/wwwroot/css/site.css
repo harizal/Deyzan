@@ -21,3 +21,11 @@
     height: 20px;
     margin-right: 6px;
 }
+
+.dataTables_length {
+    padding-bottom: 5px;
+}
+
+.table {
+    border-top: 1px solid rgba(0, 0, 0, 0.3);
+}

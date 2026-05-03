@@ -1,0 +1,126 @@
+@{
+    ViewData["Title"] = "Flagging";
+}
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css" />
+
+<div class="card">
+    <div class="card-header">
+        <strong>Flagging Peserta</strong>
+    </div>
+    <div class="card-body">
+        <div class="mb-3 row g-2 align-items-end">
+            <div class="col-sm-3">
+                <label for="dateFrom" class="form-label">Tanggal Flaging dari</label>
+                <input type="date" id="dateFrom" class="form-control" />
+            </div>
+            <div class="col-sm-3">
+                <label for="dateTo" class="form-label">Tanggal Flaging sampai</label>
+                <input type="date" id="dateTo" class="form-control" />
+            </div>
+            <div class="col-sm-3 align-self-end">
+                <button id="resetDateFilter" type="button" class="btn btn-secondary">Reset Filter</button>
+            </div>
+        </div>
+
+        <table id="flaggingTable" class="table table-striped table-bordered" style="width:100%">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>NIP</th>
+                    <th>Notas</th>
+                    <th>Nama</th>
+                    <th>Instansi</th>
+                    <th>Provinsi</th>
+                    <th>Kota</th>
+                    <th>Kecamatan</th>
+                    <th>Kelurahan</th>
+                    <th>Alamat</th>
+                    <th>No Telpon</th>
+                    <th>Tanggal Flaging</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+    <script>
+        function parseDateValue(value) {
+            if (!value) return null;
+            var normalized = value.split(' ')[0];
+            var parts = normalized.split('-');
+            if (parts.length !== 3) return null;
+            return new Date(parts[0], parts[1] - 1, parts[2]);
+        }
+
+        $(function () {
+            var table = $('#flaggingTable').DataTable({
+                dom: 'lrtip',
+                ajax: {
+                    url: '@Url.Action("GetFlaggingData", "Flagging")',
+                    dataSrc: 'data'
+                },
+                columns: [
+                    {
+                        data: null,
+                        title: 'No',
+                        render: function (data, type, row, meta) {
+                            return meta.row + 1;
+                        },
+                        orderable: false,
+                        searchable: false
+                    },
+                    { data: 'nip', title: 'NIP' },
+                    { data: 'notas', title: 'Notas' },
+                    { data: 'nama', title: 'Nama' },
+                    { data: 'instansi', title: 'Instansi' },
+                    { data: 'provinsi', title: 'Provinsi' },
+                    { data: 'kota', title: 'Kota' },
+                    { data: 'kecamatan', title: 'Kecamatan' },
+                    { data: 'kelurahan', title: 'Kelurahan' },
+                    { data: 'alamat', title: 'Alamat' },
+                    { data: 'noTel', title: 'No Telpon' },
+                    { data: 'tanggalFlaging', title: 'Tanggal Flaging' }
+                ],
+                pageLength: 10,
+                responsive: true,
+                order: [[11, 'desc']]
+            });
+
+            $.fn.dataTable.ext.search.push(function (settings, rowData) {
+                if (settings.nTable.id !== 'flaggingTable') {
+                    return true;
+                }
+
+                var fromDate = parseDateValue($('#dateFrom').val());
+                var toDate = parseDateValue($('#dateTo').val());
+                var rowDate = parseDateValue(rowData.tanggalFlaging);
+
+                if (!rowDate) {
+                    return !fromDate && !toDate;
+                }
+
+                if (fromDate && rowDate < fromDate) {
+                    return false;
+                }
+                if (toDate && rowDate > toDate) {
+                    return false;
+                }
+                return true;
+            });
+
+            $('#dateFrom, #dateTo').on('change', function () {
+                table.draw();
+            });
+
+            $('#resetDateFilter').on('click', function () {
+                $('#dateFrom').val('');
+                $('#dateTo').val('');
+                table.draw();
+            });
+        });
+    </script>
+}

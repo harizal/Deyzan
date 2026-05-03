@@ -278,5 +278,6 @@ namespace Flagging.Taspen.Web.Controllers
 
             return Json(new { success = true, message = "Flaging berhasil disimpan", redirectUrl = Url.Action("Index", "Home") });
         }
+
     }
 }
