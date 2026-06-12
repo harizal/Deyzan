@@ -1,0 +1,128 @@
+@model Flagging.Taspen.Web.ViewModels.PesertaCreateEditViewModel
+
+<input type="hidden" name="ID" value="@Model.ID" />
+<input type="hidden" name="Surat" value="@Model.Surat" />
+
+<div class="row mb-1">
+    <div class="col-md-4">
+        <label class="form-label">NIP</label>
+        <input class="form-control" name="NIP" value="@Model.NIP" required />
+    </div>
+    <div class="col-md-4">
+        <label class="form-label">Notas</label>
+        <input class="form-control" name="Notas" value="@Model.Notas" required />
+    </div>
+    <div class="col-md-4">
+        <label class="form-label">No KPE</label>
+        <input class="form-control" name="NoKPE" value="@Model.NoKPE" />
+    </div>
+</div>
+<div class="row mb-1">
+    <div class="col-md-8">
+        <label class="form-label">Nama</label>
+        <input class="form-control" name="Nama" value="@Model.Nama" required />
+    </div>
+    <div class="col-md-4">
+        <label class="form-label">Tanggal Lahir</label>
+        <input type="date" class="form-control" name="TanggalLahir" value="@(Model.TanggalLahir == default ? "" : Model.TanggalLahir.ToString("yyyy-MM-dd"))" required />
+    </div>
+</div>
+<div class="row mb-1">
+    <div class="col-md-12">
+        <label class="form-label">Instansi</label>
+        <input class="form-control" name="Instansi" value="@Model.Instansi" required />
+    </div>
+</div>
+
+<div class="row mb-1">
+    <div class="col-md-3">
+        <label class="form-label">Provinsi</label>
+        <select id="provinsi" name="IdProvinsi" class="form-select" required>
+            <option value="">-- Pilih Provinsi --</option>
+            @foreach (var p in Model.ProvinsiList)
+            {
+                <option value="@p.Value" selected="@((p.Value == Model.IdProvinsi) ? "selected" : null)">@p.Text</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-3">
+        <label class="form-label">Kota</label>
+        <select id="kota" name="IdKota" class="form-select" required>
+            <option value="">-- Pilih Kota --</option>
+            @foreach (var p in Model.KotaList)
+            {
+                <option value="@p.Value" selected="@((p.Value == Model.IdKota) ? "selected" : null)">@p.Text</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-3">
+        <label class="form-label">Kecamatan</label>
+        <select id="kecamatan" name="IdKecamatan" class="form-select" required>
+            <option value="">-- Pilih Kecamatan --</option>
+            @foreach (var p in Model.KecamatanList)
+            {
+                <option value="@p.Value" selected="@((p.Value == Model.IdKecamatan) ? "selected" : null)">@p.Text</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-3">
+        <label class="form-label">Kelurahan</label>
+        <select id="kelurahan" name="IdKelurahan" class="form-select" required>
+            <option value="">-- Pilih Kelurahan --</option>
+            @foreach (var p in Model.KelurahanList)
+            {
+                <option value="@p.Value" selected="@((p.Value == Model.IdKelurahan) ? "selected" : null)">@p.Text</option>
+            }
+        </select>
+    </div>
+</div>
+
+<div class="row mb-1">
+    <div class="col-md-12">
+        <label class="form-label">Alamat</label>
+        <textarea class="form-control" name="Alamat" required>@Model.Alamat</textarea>
+    </div>
+</div>
+<div class="row mb-1">
+    <div class="col-md-6">
+        <label class="form-label">No Rekening Kredit</label>
+        <input class="form-control" name="RekKredit" value="@Model.RekKredit" />
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">No Rekening Tabungan</label>
+        <input class="form-control" name="RekTabungan" value="@Model.RekTabungan" />
+    </div>
+</div>
+<div class="row mb-1">
+    <div class="col-md-12">
+        <label class="form-label">NIK Peserta</label>
+        <input class="form-control" name="NIK" value="@Model.NIK" />
+    </div>
+</div>
+
+<div class="row mb-1">
+    <div class="col-md-12">
+        <label class="form-label">Surat Pernyataan (PDF dan dibawah 1 MB)</label>
+        <input type="file" class="form-control" name="SuratPernyataan" accept="application/pdf" />
+        @if (!string.IsNullOrEmpty(Model.Surat))
+        {
+            <div class="form-text mt-2">
+                File saat ini: <a target="_blank" href="@Url.Content("~/uploads/" + Model.Surat)">Download</a>. Pilih file baru jika ingin mengganti.
+            </div>
+        }
+    </div>
+</div>
+<div class="row mb-1">
+    <div class="col-md-4">
+        <label class="form-label">TMT Kredit</label>
+        <input type="date" class="form-control" name="TMTKredit" value="@(Model.TMTKredit == null || Model.TMTKredit == default ? "" : Model.TMTKredit.Value.ToString("yyyy-MM-dd"))" />
+    </div>
+    <div class="col-md-4">
+        <label class="form-label">TAT Kredit</label>
+        <input type="date" class="form-control" name="TATKredit" value="@(Model.TATKredit == null || Model.TATKredit == default ? "" : Model.TATKredit.Value.ToString("yyyy-MM-dd"))" />
+    </div>
+    <div class="col-md-4">
+        <label class="form-label">No Telepon Peserta</label>
+        <input class="form-control" name="NoTel" value="@Model.NoTel" />
+    </div>
+</div>

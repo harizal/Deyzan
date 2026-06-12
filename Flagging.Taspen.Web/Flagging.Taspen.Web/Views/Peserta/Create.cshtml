@@ -1,0 +1,31 @@
+@model Flagging.Taspen.Web.ViewModels.PesertaCreateEditViewModel
+@{
+    ViewData["Title"] = "Tambah Peserta";
+}
+
+<div class="card col-md-12">
+    <div class="card-header"><strong>Tambah Peserta</strong></div>
+
+    <form id="pesertaForm" asp-action="Create" asp-controller="Peserta" method="post" enctype="multipart/form-data">
+        <div class="card-body">
+            @Html.AntiForgeryToken()
+            @await Html.PartialAsync("_Form", Model)
+        </div>
+
+        <div class="card-footer text-body-secondary">
+            <a class="btn btn-secondary me-2" href="@Url.Action("Index", "Peserta")">Batal</a>
+            <button id="btnSubmit" type="submit" class="btn btn-primary ms-2">Simpan</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        window.pesertaUrls = {
+            getKota: '@Url.Action("GetKota", "Peserta")',
+            getKecamatan: '@Url.Action("GetKecamatan", "Peserta")',
+            getKelurahan: '@Url.Action("GetKelurahan", "Peserta")'
+        };
+    </script>
+    <script src="~/js/peserta.js"></script>
+}

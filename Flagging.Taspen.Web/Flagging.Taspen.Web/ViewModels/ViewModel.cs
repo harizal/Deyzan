@@ -16,6 +16,51 @@ namespace Flagging.Taspen.Web.ViewModels
         public bool IsFlaging { get; set; }
     }
 
+    public class PesertaCreateEditViewModel
+    {
+        public string? ID { get; set; }
+
+        [Required]
+        public string NIP { get; set; }
+        [Required]
+        public string Notas { get; set; }
+        public string? NoKPE { get; set; }
+        [Required]
+        public string Nama { get; set; }
+        [Required]
+        public DateTime TanggalLahir { get; set; }
+        [Required]
+        public string Instansi { get; set; }
+
+        [Required]
+        public string IdProvinsi { get; set; }
+        public string? Provinsi { get; set; }
+        [Required]
+        public string IdKota { get; set; }
+        public string? Kota { get; set; }
+        [Required]
+        public string IdKecamatan { get; set; }
+        public string? Kecamatan { get; set; }
+        [Required]
+        public string IdKelurahan { get; set; }
+        public string? Kelurahan { get; set; }
+        [Required]
+        public string Alamat { get; set; }
+        public string? RekKredit { get; set; }
+        public string? RekTabungan { get; set; }
+        public string? NIK { get; set; }
+        public string? Surat { get; set; }
+        public IFormFile? SuratPernyataan { get; set; }
+        public DateTime? TMTKredit { get; set; }
+        public DateTime? TATKredit { get; set; }
+        public string? NoTel { get; set; }
+
+        public SelectList? ProvinsiList { get; set; }
+        public SelectList? KotaList { get; set; }
+        public SelectList? KecamatanList { get; set; }
+        public SelectList? KelurahanList { get; set; }
+    }
+
     public class FlagingPensiunViewModel
     {
         public string ID { get; set; }
